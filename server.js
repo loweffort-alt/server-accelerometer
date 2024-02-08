@@ -1,13 +1,14 @@
 // Importa Express
 import express from "express";
 import cors from "cors";
+import "dotenv/config";
 
 // Crea una aplicación Express
 const app = express();
 
 // Define una ruta para tu proxy
 app.use(cors());
-app.use("/proxy", async (req, res) => {
+app.use("/", async (req, res) => {
   try {
     // Realiza la solicitud a la URL deseada
     const response = await fetch(
@@ -35,6 +36,6 @@ app.use("/proxy", async (req, res) => {
 });
 
 // Inicia el servidor en el puerto 3000
-app.listen(3001, () => {
-  console.log("Servidor proxy escuchando en el puerto 3001");
+app.listen(process.env.PORT, () => {
+  console.log(`Servidor proxy escuchando en el puerto ${process.env.PORT}`);
 });
