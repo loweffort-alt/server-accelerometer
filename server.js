@@ -8,7 +8,7 @@ const app = express();
 
 // Define una ruta para tu proxy
 app.use(cors());
-app.use("/", async (req, res) => {
+app.use("/proxy", async (req, res) => {
   try {
     // Realiza la solicitud a la URL deseada
     const response = await fetch(
