@@ -8,6 +8,7 @@ export const fetchData = async (req, res) => {
       const data = await response.json();
 
       res.json(data);
+      return data;
     } else {
       res
         .status(response.status)
