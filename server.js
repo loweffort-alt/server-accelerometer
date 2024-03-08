@@ -145,4 +145,4 @@ setInterval(async () => {
     // Q hacemos en caso caiga el server?
     console.error("Error, server caído", error);
   }
-}, 60000 /*Por el momento hace la consulta cada 10 segundos */);
+}, 30000 /*Por el momento hace la consulta cada 10 segundos */);
