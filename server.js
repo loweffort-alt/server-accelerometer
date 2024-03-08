@@ -7,12 +7,14 @@ const app = express();
 
 app.use(cors());
 
-const URL = "https://accel-server-test.onrender.com/prueba.json";
+//const URL = "https://accel-server-test.onrender.com/prueba.json";
 
 // Función fetchData que obtiene los datos de la URL especificada
 const fetchData = async () => {
   try {
-    const response = await fetch(URL);
+    const response = await fetch(
+      "https://accel-server-test.onrender.com/prueba.json",
+    );
     if (response.ok) {
       const data = await response.json();
       return data;
