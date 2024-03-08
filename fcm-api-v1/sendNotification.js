@@ -3,7 +3,7 @@ import { JWT } from "google-auth-library";
 import { key } from "../credentials/accelerometer-c758f-21785a7fbcc6.js";
 import { app } from "../firebaseconfig/realtimeData/index.js";
 import { getDatabase, ref, child, get } from "firebase/database";
-import fetch from "node-fetch"; // Importa la función fetch
+//import fetch from "node-fetch"; // Importa la función fetch
 
 const databaseRef = ref(getDatabase(app));
 async function fetchDataFromFirebase() {
