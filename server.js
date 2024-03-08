@@ -2,14 +2,17 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import fetch from "node-fetch"; // Importa la función fetch
+import { requestOptions, url } from "./fcm-api-v1/sendNotification.js";
 const app = express();
 
 app.use(cors());
 
+const URL = "https://accel-server-test.onrender.com/prueba.json";
+
 // Función fetchData que obtiene los datos de la URL especificada
 const fetchData = async () => {
   try {
-    const response = await fetch("http://localhost:8080/prueba.json");
+    const response = await fetch(URL);
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -40,9 +43,11 @@ app.use("/proxy", updateProxyData, (req, res) => {
   res.json(res.locals.proxyData); // Envía los datos almacenados en res.locals.proxyData
 });
 
+const PORT = process.env.PORT || 3000;
+
 // Inicia el servidor
-app.listen(process.env.PORT, () => {
-  console.log(`Servidor proxy escuchando en el puerto ${process.env.PORT}`);
+app.listen(PORT, () => {
+  console.log(`Servidor proxy escuchando en el puerto ${PORT}`);
 });
 
 const wea = [
@@ -102,7 +107,7 @@ const wea = [
   ],
 ];
 
-// Llama a fetchData cada 30 segundos para mantener actualizados los datos
+// Llama a fetchData cada 10 segundos para mantener actualizados los datos
 setInterval(async () => {
   try {
     const data = await fetchData();
@@ -114,7 +119,23 @@ setInterval(async () => {
     const HoraActual = wea[1][0].HoraLocal;
     const HoraPrevia = wea[0][0].HoraLocal;
     if (HoraActual !== HoraPrevia) {
-      console.log("Hay nuevo cambio, ENVIA NOTIFICACIÓN");
+      fetch(url, requestOptions)
+        .then((response) => {
+          // Verificar si la respuesta es exitosa (código de estado en el rango 200-299)
+          if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.status);
+          }
+          // Convertir la respuesta a JSON
+          return response.json();
+        })
+        .then((data) => {
+          // Manejar los datos de la respuesta
+          console.log("Respuesta:", data);
+        })
+        .catch((error) => {
+          // Manejar cualquier error que ocurra durante la solicitud
+          console.error("Error:", error);
+        });
     } else {
       console.log("no cambia, no hagas nada");
     }
@@ -122,4 +143,4 @@ setInterval(async () => {
     // Q hacemos en caso caiga el server?
     console.error("Error, server caído", error);
   }
-}, 10000 /*Por el momento hace la consulta cada 10 segundos */);
+}, 30000 /*Por el momento hace la consulta cada 10 segundos */);
