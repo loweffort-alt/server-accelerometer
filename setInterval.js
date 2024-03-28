@@ -11,6 +11,9 @@ function convertEpoch(data) {
   const completeTime = new Date(completeStringTime);
   const epochTime = completeTime.getTime() / 1000;
 
+  const peruTimezone = 5 * 60 * 60 * 1000;
+  epochTime -= peruTimezone;
+
   return epochTime;
 }
 
@@ -19,12 +22,7 @@ function compareData(dataUpdated) {
   const currentData = dataUpdated[0][0];
   const newData = dataUpdated[1][0];
 
-  const epochCurrentData = convertEpoch(currentData);
-  const epochNewData = convertEpoch(newData);
-
-  console.log({ currentData, newData, epochNewData, epochCurrentData });
-
-  if (epochNewData !== epochCurrentData) {
+  if (currentData.id !== newData.id) {
     fetch(urlFCMGoogleAPI, requestOptions)
       .then((response) => {
         // Verificar si la respuesta es exitosa (código de estado en el rango 200-299)
@@ -47,7 +45,7 @@ function compareData(dataUpdated) {
   }
 }
 
-// Llama a fetchData cada 10 segundos para mantener actualizados los datos
+// Llama a fetchData cada 30 min para mantener actualizados los datos
 export const reloadServer = ({ app }) => {
   setInterval(async () => {
     try {
@@ -63,5 +61,5 @@ export const reloadServer = ({ app }) => {
       // Q hacemos en caso caiga el server?
       console.error("Error, server caído", error);
     }
-  }, 10000 /*Por el momento hace la consulta cada 10 segundos */);
+  }, 1800000 /*Por el momento hace la consulta cada 30 min */);
 };
