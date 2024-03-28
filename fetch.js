@@ -1,13 +1,10 @@
 export const fetchData = async (req, res) => {
   try {
     const response = await fetch(
-      "https://servidor.ncn.pe/sensor/py/sismoIGP.json",
+      "https://accel-server-test.onrender.com/prueba.json",
     );
-
     if (response.ok) {
       const data = await response.json();
-
-      res.json(data);
       return data;
     } else {
       res
@@ -15,7 +12,6 @@ export const fetchData = async (req, res) => {
         .json({ error: "No se pudo obtener los datos" });
     }
   } catch (error) {
-    console.error("Error al obtener los datos:", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };

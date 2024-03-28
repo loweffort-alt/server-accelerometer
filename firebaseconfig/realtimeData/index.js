@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyDJoNjQP328QMNTNREXs4O2H5XGcF-Ln7M",
   authDomain: "accelerometer-c758f.firebaseapp.com",
   databaseURL: "https://accelerometer-c758f-default-rtdb.firebaseio.com",
@@ -11,4 +11,4 @@ const firebaseConfig = {
   measurementId: "G-362H2Z6Y6P",
 };
 
-export const app = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);

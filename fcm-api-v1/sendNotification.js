@@ -1,11 +1,15 @@
 import "dotenv/config";
 import { JWT } from "google-auth-library";
-import { key } from "../credentials/accelerometer-c758f-21785a7fbcc6.js";
-import { app } from "../firebaseconfig/realtimeData/index.js";
+import {
+  firebaseApp,
+  firebaseConfig,
+} from "../firebaseconfig/realtimeData/index.js";
 import { getDatabase, ref, child, get } from "firebase/database";
-//import fetch from "node-fetch"; // Importa la función fetch
+import { key } from "../credentials/accelerometerKey.js";
 
-const databaseRef = ref(getDatabase(app));
+const databaseRef = ref(getDatabase(firebaseApp));
+
+//Cada dispositivo manda su token de FCM a Firebase RealtimeDatabase
 async function fetchDataFromFirebase() {
   const snapshot = await get(child(databaseRef, "infoDevice"));
   if (snapshot.exists()) {
@@ -18,9 +22,6 @@ async function fetchDataFromFirebase() {
 }
 
 const tokenFCM = await fetchDataFromFirebase();
-console.log(tokenFCM);
-
-//const GOOGLE_APPLICATION_CREDENTIALS = process.env.TOKEN;
 
 async function getAccessToken() {
   try {
@@ -48,11 +49,8 @@ async function getAccessToken() {
 
 const eww = await getAccessToken();
 
-//Número del proyecto
-const idProject = "219815381267";
-
 //API V1 URL
-export const url = `https://fcm.googleapis.com/v1/projects/${idProject}/messages:send`;
+export const urlFCMGoogleAPI = `https://fcm.googleapis.com/v1/projects/${firebaseConfig.messagingSenderId}/messages:send`;
 const authorization = `Bearer ${eww}`;
 
 export const headers = new Headers();
@@ -81,21 +79,3 @@ export const requestOptions = {
   headers: headers,
   body: JSON.stringify(body),
 };
-
-//fetch(url, requestOptions)
-//.then((response) => {
-//// Verificar si la respuesta es exitosa (código de estado en el rango 200-299)
-//if (!response.ok) {
-//throw new Error("Error en la solicitud: " + response.status);
-//}
-//// Convertir la respuesta a JSON
-//return response.json();
-//})
-//.then((data) => {
-//// Manejar los datos de la respuesta
-//console.log("Respuesta:", data);
-//})
-//.catch((error) => {
-//// Manejar cualquier error que ocurra durante la solicitud
-//console.error("Error:", error);
-//});
