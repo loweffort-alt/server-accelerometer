@@ -2,7 +2,7 @@ import("dotenv/config");
 
 export const fetchData = async (req, res) => {
   try {
-    const response = await fetch(process.env.PRODUCTION_URL);
+    const response = await fetch(process.env.DEVELOP_URL);
     if (response.ok) {
       const data = await response.json();
       return data;
