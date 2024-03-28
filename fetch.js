@@ -1,8 +1,8 @@
+import("dotenv/config");
+
 export const fetchData = async (req, res) => {
   try {
-    const response = await fetch(
-      "https://accel-server-test.onrender.com/prueba.json",
-    );
+    const response = await fetch(process.env.PRODUCTION_URL);
     if (response.ok) {
       const data = await response.json();
       return data;
