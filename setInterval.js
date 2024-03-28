@@ -1,6 +1,6 @@
 import fetch from "node-fetch"; // Importa la función fetch
 import {
-  requestOptions,
+  sendHeadersAndBody,
   urlFCMGoogleAPI,
 } from "./fcm-api-v1/sendNotification.js";
 import { initialData } from "./initialData.js";
@@ -9,12 +9,12 @@ import { fetchData } from "./fetch.js";
 function convertEpoch(data) {
   const completeStringTime = `${data.FechaLocal}T${data.HoraLocal}`;
   const completeTime = new Date(completeStringTime);
-  const epochTime = completeTime.getTime() / 1000;
+  let epochTime = completeTime.getTime() / 1000;
 
   const peruTimezone = 5 * 60 * 60 * 1000;
   epochTime -= peruTimezone;
 
-  return epochTime;
+  return `${epochTime}`;
 }
 
 //Siempre habrá 2 elementos en dataUpdated, el elemento 1 es comparado con el 0 y si hay cambio entonces varía el JSON
@@ -22,8 +22,10 @@ function compareData(dataUpdated) {
   const currentData = dataUpdated[0][0];
   const newData = dataUpdated[1][0];
 
+  const epochTimeNewData = convertEpoch(newData);
+
   if (currentData.id !== newData.id) {
-    fetch(urlFCMGoogleAPI, requestOptions)
+    fetch(urlFCMGoogleAPI, sendHeadersAndBody(epochTimeNewData))
       .then((response) => {
         // Verificar si la respuesta es exitosa (código de estado en el rango 200-299)
         if (!response.ok) {
@@ -61,5 +63,5 @@ export const reloadServer = ({ app }) => {
       // Q hacemos en caso caiga el server?
       console.error("Error, server caído", error);
     }
-  }, 1800000 /*Por el momento hace la consulta cada 30 min */);
+  }, 10000 /*Por el momento hace la consulta cada 30 min */);
 };

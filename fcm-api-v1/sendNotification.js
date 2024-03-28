@@ -53,29 +53,38 @@ const eww = await getAccessToken();
 export const urlFCMGoogleAPI = `https://fcm.googleapis.com/v1/projects/${firebaseConfig.messagingSenderId}/messages:send`;
 const authorization = `Bearer ${eww}`;
 
-export const headers = new Headers();
-headers.append("Content-Type", "application/json");
-headers.append("Authorization", authorization);
+export function sendHeadersAndBody(epochTimeNewData) {
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", authorization);
 
-export const body = {
-  message: {
-    token: tokenFCM,
-    //notification: {
-    //title: "Nuevo sismo registrado",
-    //body: "La base de datos del IGP ah sido actualizada",
-    //},
-    data: {
-      hurry: "New Sismo",
-      description: "Iniciar Envio de datos",
+  const body = {
+    message: {
+      token: tokenFCM,
+      //notification: {
+      //title: "Nuevo sismo registrado",
+      //body: "La base de datos del IGP ah sido actualizada",
+      //},
+      data: {
+        hurry: "New Sismo",
+        description: "Iniciar Envio de datos",
+        seismTime: epochTimeNewData,
+      },
+      android: {
+        direct_boot_ok: true,
+      },
     },
-    android: {
-      direct_boot_ok: true,
-    },
-  },
-};
+  };
 
-export const requestOptions = {
-  method: "POST",
-  headers: headers,
-  body: JSON.stringify(body),
-};
+  return {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body),
+  };
+}
+
+//export const requestOptions = {
+//method: "POST",
+//headers: headers,
+//body: JSON.stringify(body),
+//};
