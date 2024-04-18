@@ -1,6 +1,6 @@
 import fetch from "node-fetch"; // Importa la función fetch
 import {
-  requestOptions,
+  sendHeadersAndBody,
   urlFCMGoogleAPI,
 } from "./fcm-api-v1/sendNotification.js";
 import { initialData } from "./initialData.js";
@@ -9,9 +9,9 @@ import { fetchData } from "./fetch.js";
 function convertEpoch(data) {
   const completeStringTime = `${data.FechaLocal}T${data.HoraLocal}`;
   const completeTime = new Date(completeStringTime);
-  const epochTime = completeTime.getTime() / 1000;
+  let epochTime = completeTime.getTime() / 1000;
 
-  return epochTime;
+  return `${epochTime}`;
 }
 
 //Siempre habrá 2 elementos en dataUpdated, el elemento 1 es comparado con el 0 y si hay cambio entonces varía el JSON
@@ -19,13 +19,10 @@ function compareData(dataUpdated) {
   const currentData = dataUpdated[0][0];
   const newData = dataUpdated[1][0];
 
-  const epochCurrentData = convertEpoch(currentData);
-  const epochNewData = convertEpoch(newData);
+  const epochTimeNewData = convertEpoch(newData);
 
-  console.log({ currentData, newData, epochNewData, epochCurrentData });
-
-  if (epochNewData !== epochCurrentData) {
-    fetch(urlFCMGoogleAPI, requestOptions)
+  if (currentData.id !== newData.id) {
+    fetch(urlFCMGoogleAPI, sendHeadersAndBody(epochTimeNewData))
       .then((response) => {
         // Verificar si la respuesta es exitosa (código de estado en el rango 200-299)
         if (!response.ok) {
@@ -47,7 +44,7 @@ function compareData(dataUpdated) {
   }
 }
 
-// Llama a fetchData cada 10 segundos para mantener actualizados los datos
+// Llama a fetchData cada 30 min para mantener actualizados los datos
 export const reloadServer = ({ app }) => {
   setInterval(async () => {
     try {
@@ -63,5 +60,5 @@ export const reloadServer = ({ app }) => {
       // Q hacemos en caso caiga el server?
       console.error("Error, server caído", error);
     }
-  }, 1800000 /*Por el momento hace la consulta cada 10 segundos */);
+  }, 10000 /*Por el momento hace la consulta cada 30 min */);
 };
