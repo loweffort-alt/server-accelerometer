@@ -11,9 +11,6 @@ function convertEpoch(data) {
   const completeTime = new Date(completeStringTime);
   let epochTime = completeTime.getTime() / 1000;
 
-  const peruTimezone = 5 * 60 * 60 * 1000;
-  epochTime -= peruTimezone;
-
   return `${epochTime}`;
 }
 

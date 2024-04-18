@@ -15,7 +15,8 @@ async function fetchDataFromFirebase() {
   if (snapshot.exists()) {
     const rawData = snapshot.val();
     const filteredData = Object.values(rawData).map((el) => el.tokenFCM);
-    return filteredData[0];
+    console.log(filteredData);
+    return filteredData[filteredData.length - 1];
   } else {
     throw new Error("No data available");
   }
@@ -75,6 +76,7 @@ export function sendHeadersAndBody(epochTimeNewData) {
       },
     },
   };
+  console.log(body);
 
   return {
     method: "POST",
