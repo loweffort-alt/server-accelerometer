@@ -60,5 +60,5 @@ export const reloadServer = ({ app }) => {
       // Q hacemos en caso caiga el server?
       console.error("Error, server caído", error);
     }
-  }, 10000 /*Por el momento hace la consulta cada 30 min */);
+  }, 1800000 /*Por el momento hace la consulta cada 30 min */);
 };
